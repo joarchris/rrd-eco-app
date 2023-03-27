@@ -1,4 +1,4 @@
-// RRD imports
+ // RRD imports
 import { useLoaderData } from 'react-router-dom';
 
 // librarys
@@ -9,7 +9,7 @@ import Intro from '../components/Intro';
 import AddBudgetForm from '../components/AddBudgetForm';
 
 // helper functions
-import { fetchData } from '../helpers';
+import { createBudget, fetchData, waait } from '../helpers';
 
 // Loader
 export function dashboardLoader() {
@@ -20,14 +20,34 @@ export function dashboardLoader() {
 
 // action
 export async function dashboardAction({ request }) {
+await waait()
+
   const data = await request.formData();
-  const formData = Object.fromEntries(data);
+  const {_action, ...values} = Object.fromEntries(data);
+
+  // new user submission
+  if (_action === 'newUser') {
   try {
-    localStorage.setItem('userName', JSON.stringify(formData.userName));
-    return toast.success(`Welcome ${formData.userName}!`);
+    localStorage.setItem('userName', JSON.stringify(values.userName));
+    return toast.success(`Welcome ${values.userName}!`);
   } catch (e) {
     throw new Error('There was an error creating account');
   }
+}
+
+// create budget submission
+if (_action === 'createBudget') {
+  try {
+  createBudget({
+    name: values.newBudget,
+    amount: values.newBudgetAmount,
+  })
+  
+return toast.success(`Budget created!`);
+} catch (e) {
+  throw new Error('There was an error creating budget');
+}
+}
 }
 
 const Dashboard = () => {
