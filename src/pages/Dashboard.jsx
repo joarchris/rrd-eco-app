@@ -7,9 +7,11 @@ import { toast } from 'react-toastify';
 // components
 import Intro from '../components/Intro';
 import AddBudgetForm from '../components/AddBudgetForm';
+import AddExpenceForm from '../components/AddExpenceForm';
 
 // helper functions
 import { createBudget, fetchData, waait } from '../helpers';
+
 
 // Loader
 export function dashboardLoader() {
@@ -60,11 +62,24 @@ const Dashboard = () => {
             Welcome back, <span className="accent"> {userName} </span>
           </h1>
           <div className="grid-sm">
-            <div className="grid-lg">
+            {
+              budgets && budgets.length > 0 
+              ?
+              (<div className="grid-lg">
               <div className="flex-lg">
                 <AddBudgetForm />
+                <AddExpenceForm budgets={budgets} />
               </div>
             </div>
+            ) : (
+              <div className="grid-sm"> 
+              <p>Personal budgeting is the secret to financial freedom.</p>
+              <p>Create a budget to get started</p>
+              <AddBudgetForm />
+              </div>
+            )
+            
+            }
           </div>
         </div>
       ) : (
